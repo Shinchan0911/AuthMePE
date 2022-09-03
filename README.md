@@ -1,6 +1,6 @@
 # AuthMePE
 Plugin UI Login, Register, Skip AuthMe Geyser
-#Yêu Cầu
+# Yêu Cầu
 Có Floodgate Và AuthMe
-#Phiên Bản
+# Phiên Bản
 java 11+ | 1.16.5 - 1.18.2
