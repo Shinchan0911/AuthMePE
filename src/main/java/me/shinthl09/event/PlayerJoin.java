@@ -1,5 +1,8 @@
 package me.shinthl09.event;
 
+import fr.xephi.authme.api.v3.AuthMeApi;
+import me.shinthl09.AuthMePE;
+import me.shinthl09.color.color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,83 +14,109 @@ import org.geysermc.cumulus.response.CustomFormResponse;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.floodgate.api.player.FloodgatePlayer;
 
-import fr.xephi.authme.api.v3.AuthMeApi;
-import me.shinthl09.AuthMePE;
-import me.shinthl09.color.color;
-
 public class PlayerJoin implements Listener {
-    private Plugin plugin = AuthMePE.getPlugin(AuthMePE.class);
+    private final Plugin plugin = AuthMePE.getPlugin(AuthMePE.class);
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        Player p = e.getPlayer();
-        (new BukkitRunnable() {
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        new BukkitRunnable() {
             public void run() {
-                if (FloodgateApi.getInstance().isFloodgatePlayer(e.getPlayer().getUniqueId())) {
-                    if ((AuthMeApi.getInstance().isRegistered(e.getPlayer().getName()))) {
-                        if (!AuthMeApi.getInstance().isAuthenticated(e.getPlayer())) {
-                            if (plugin.getConfig().getBoolean("Setting.Skip-AuthMe-Geyser")) {
-                                p.sendMessage(color.transalate(plugin.getConfig().getString("Message.Auto-Login")));
-                                AuthMeApi.getInstance().forceLogin(p);
-                            } else if (plugin.getConfig().getBoolean("Setting.Menu-AuthMe-Geyser")) {
-                                FloodgatePlayer floodplayer = FloodgateApi.getInstance().getPlayer(p.getUniqueId());
-                                floodplayer.sendForm(((CustomForm.Builder) ((CustomForm.Builder) CustomForm.builder()
-                                        .title(color.transalate(plugin.getConfig().getString("Menu.Title-Login"))))
-                                        .input(color.transalate(plugin.getConfig().getString("Menu.Title-Login-Password")),
-                                                color.transalate(
-                                                        plugin.getConfig().getString("Menu.Input-Login-Placeholder")))
-                                        .responseHandler((form, responseData) -> {
-                                            CustomFormResponse loginform = form.parseResponse(responseData);
-                                            if (!loginform.isCorrect())
-                                                p.kickPlayer(color.transalate(
-                                                        plugin.getConfig().getString("Message.Not-Enough")));
-                                            String password = loginform.getInput(0);
-                                            if (AuthMeApi.getInstance().checkPassword(p.getName(), password)) {
-                                                AuthMeApi.getInstance().forceLogin(p);
-                                            } else
-                                                p.kickPlayer(color.transalate(
-                                                        plugin.getConfig().getString("Message.Wrong-Password")));
-                                        })).build());
-                            }
-                        }
-                    } else {
-                        if (plugin.getConfig().getBoolean("Setting.Skip-AuthMe-Geyser")) {
-                            AuthMeApi.getInstance().forceRegister(p,
-                                    plugin.getConfig().getString("Setting.Password-Login-Geyser"), true);
-                            p.sendMessage(color.transalate(plugin.getConfig().getString("Message.Auto-Register")));
-                        } else if (plugin.getConfig().getBoolean("Setting.Menu-AuthMe-Geyser")) {
-                            FloodgatePlayer floodplayer = FloodgateApi.getInstance().getPlayer(p.getUniqueId());
-                            floodplayer.sendForm(((CustomForm.Builder) ((CustomForm.Builder) CustomForm.builder()
-                                    .title(color.transalate(plugin.getConfig().getString("Menu.Title-Register"))))
-                                    .input(color.transalate(plugin.getConfig().getString("Menu.Title-Register-Password")),
-                                            color.transalate(
-                                                    plugin.getConfig().getString("Menu.Input-Register-Placeholder")))
-                                    .input(color.transalate(plugin.getConfig().getString("Menu.Title-Register-RePassword")),
-                                            color.transalate(
-                                                    plugin.getConfig().getString("Menu.Input-Register-RePlaceholder")))
-                                    .responseHandler((form, responseData) -> {
-                                        CustomFormResponse registerform = form.parseResponse(responseData);
-                                        if (!registerform.getToggle(2)) {
-                                            p.kickPlayer(color
-                                                    .transalate(plugin.getConfig().getString( "Message.Not-Toggle")));
-                                        }
-                                        if (!registerform.isCorrect())
-                                            p.kickPlayer(color
-                                                    .transalate(plugin.getConfig().getString("Message.Not-Enough")));
-                                        String password = registerform.getInput(0);
-                                        String repassword = registerform.getInput(1);
-                                        if (repassword.equals(password)) {
-                                            AuthMeApi.getInstance().forceRegister(p, password, true);
-                                        } else
-                                            p.kickPlayer(color
-                                                    .transalate(plugin.getConfig().getString("Message.Not-Same")));
-                                    })).build());
-                        }
-                    }
-                } else {
-                    return;
-                }
+                handlePlayerJoin(event.getPlayer());
             }
-        }).runTaskLater(plugin, plugin.getConfig().getLong("Setting.Delay-Open-Menu") * 20L);
+        }.runTaskLater(plugin, plugin.getConfig().getLong("Setting.Delay-Open-Menu") * 10L);
+    }
+
+    private void handlePlayerJoin(Player player) {
+        if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+            if (AuthMeApi.getInstance().isRegistered(player.getName())) {
+                handleRegisteredPlayer(player);
+            } else {
+                handleUnregisteredPlayer(player);
+            }
+        }
+    }
+
+    private void handleRegisteredPlayer(Player player) {
+        if (!AuthMeApi.getInstance().isAuthenticated(player)) {
+            if (!plugin.getConfig().getBoolean("Setting.Menu-AuthMe-Geyser")) {
+                player.sendMessage(color.transalate(plugin.getConfig().getString("Message.Auto-Login")));
+                AuthMeApi.getInstance().forceLogin(player);
+            } else {
+                sendLoginMenu(player, null);
+            }
+        }
+    }
+
+    private void handleUnregisteredPlayer(Player player) {
+        if (!plugin.getConfig().getBoolean("Setting.Menu-AuthMe-Geyser")) {
+            AuthMeApi.getInstance().forceRegister(player, plugin.getConfig().getString("Setting.Password-Login-Geyser"), true);
+            player.sendMessage(color.transalate(plugin.getConfig().getString("Message.Auto-Register")));
+        } else {
+            sendRegisterMenu(player, null);
+        }
+    }
+
+    private void sendLoginMenu(Player player, String label) {
+        FloodgatePlayer floodPlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
+        CustomForm.Builder formBuilder = createFormBuilder("Menu.Title-Login", "Menu.Title-Login-Password", "Menu.Input-Login-Placeholder");
+        formBuilder.responseHandler((form, responseData) -> handleLoginFormResponse(player, form.parseResponse(responseData)));
+        addLabelToForm(formBuilder, label);
+        floodPlayer.sendForm(formBuilder.build());
+    }
+
+    private void handleLoginFormResponse(Player player, CustomFormResponse loginForm) {
+        if (!loginForm.isCorrect()) {
+            sendLoginMenu(player, plugin.getConfig().getString("Message.Not-Enough"));
+            return;
+        }
+
+        String password = loginForm.getInput(0);
+        if (AuthMeApi.getInstance().checkPassword(player.getName(), password)) {
+            AuthMeApi.getInstance().forceLogin(player);
+        } else {
+            sendLoginMenu(player, plugin.getConfig().getString("Message.Wrong-Password"));
+        }
+    }
+
+    private void sendRegisterMenu(Player player, String label) {
+        FloodgatePlayer floodPlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
+        CustomForm.Builder formBuilder = createFormBuilder("Menu.Title-Register", "Menu.Title-Register-Password", "Menu.Input-Register-Placeholder");
+        formBuilder.input(
+                color.transalate(plugin.getConfig().getString("Menu.Title-Register-RePassword")),
+                color.transalate(plugin.getConfig().getString("Menu.Input-Register-RePlaceholder"))
+        );
+        formBuilder.responseHandler((form, responseData) -> handleRegisterFormResponse(player, form.parseResponse(responseData)));
+        addLabelToForm(formBuilder, label);
+        floodPlayer.sendForm(formBuilder.build());
+    }
+
+    private void handleRegisterFormResponse(Player player, CustomFormResponse registerForm) {
+        if (!registerForm.isCorrect()) {
+            sendRegisterMenu(player, plugin.getConfig().getString("Message.Not-Enough"));
+            return;
+        }
+
+        String password = registerForm.getInput(0);
+        String rePassword = registerForm.getInput(1);
+        if (rePassword.equals(password)) {
+            AuthMeApi.getInstance().forceRegister(player, password, true);
+        } else {
+            sendRegisterMenu(player, plugin.getConfig().getString("Message.Not-Same"));
+        }
+    }
+
+    private CustomForm.Builder createFormBuilder(String titleConfigKey, String inputTitleConfigKey, String inputPlaceholderConfigKey) {
+        return CustomForm.builder()
+                .title(color.transalate(plugin.getConfig().getString(titleConfigKey)))
+                .input(
+                        color.transalate(plugin.getConfig().getString(inputTitleConfigKey)),
+                        color.transalate(plugin.getConfig().getString(inputPlaceholderConfigKey))
+                );
+    }
+
+    private void addLabelToForm(CustomForm.Builder formBuilder, String label) {
+        if (label != null) {
+            formBuilder.label(color.transalate(label));
+        }
     }
 }

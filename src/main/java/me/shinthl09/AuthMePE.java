@@ -1,8 +1,5 @@
 package me.shinthl09;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,51 +9,71 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.shinthl09.color.color;
 import me.shinthl09.event.PlayerJoin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AuthMePE extends JavaPlugin {
+
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
-        this.getLogger().info(color.transalate("&e---------------------\n"));
-        this.getLogger().info(color.transalate("&aAuthor:&e ShinTHL09"));
-        this.getLogger().info(color.transalate("&aPlugin:&e Has Enable"));
-        this.getLogger().info(color.transalate("&aName:&e " + this.getName() + "\n"));
-        this.getLogger().info(color.transalate("&e---------------------"));
+        logMessage("&e---------------------");
+        logMessage("&aAuthor:&e ShinTHL09");
+        logMessage("&aPlugin:&e Has Enable");
+        logMessage("&aName:&e " + this.getName());
+        logMessage("&aVersion:&e " + this.getPluginMeta().getVersion());
+        logMessage("&e---------------------");
     }
 
     @Override
     public void onDisable() {
-        this.getLogger().info(color.transalate("&e---------------------\n"));
-        this.getLogger().info(color.transalate("&aAuthor:&e ShinTHL09"));
-        this.getLogger().info(color.transalate("&aPlugin:&e Has Disable"));
-        this.getLogger().info(color.transalate("&aName:&e " + this.getName() + "\n"));
-        this.getLogger().info(color.transalate("&e---------------------"));
+        logMessage("&e---------------------");
+        logMessage("&aAuthor:&e ShinTHL09");
+        logMessage("&aPlugin:&e Has Disable");
+        logMessage("&aName:&e " + this.getName());
+        logMessage("&aVersion:&e " + this.getPluginMeta().getVersion());
+        logMessage("&e---------------------");
     }
 
+    private void logMessage(String message) {
+        Bukkit.getConsoleSender().sendMessage(color.transalate(message));
+    }
+
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("authmepe")) {
-            if (sender.hasPermission("authmepe.admin") || !(sender instanceof Player)) {
-                if (args.length == 0) {
-                    sender.sendMessage(color.transalate(this.getConfig().getString("Message.Command-Wrong")));
-                } else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
-                    this.reloadConfig();
-                    sender.sendMessage(color.transalate(this.getConfig().getString("Message.Reload-Successful")));
-                } else {
-                    sender.sendMessage(color.transalate(this.getConfig().getString("Message.Command-Wrong")));
-                }
-            } else
-                sender.sendMessage(color.transalate(this.getConfig().getString("Message.No-Permissions")));
+            handleAuthMeCommand(sender, args);
         }
         return true;
     }
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
-        if (cmd.getName().equalsIgnoreCase("authmepe")) {
-            if (args.length == 1) {
-                ArrayList<String> command = new ArrayList<>();
-                command.add("reload");
-                return command;
+
+    private void handleAuthMeCommand(CommandSender sender, String[] args) {
+        if (sender.hasPermission("authmepe.admin") || !(sender instanceof Player)) {
+            if (args.length == 0) {
+                sender.sendMessage(color.transalate(getConfig().getString("Message.Command-Wrong")));
+            } else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
+                reloadConfiguration(sender);
+            } else {
+                sender.sendMessage(color.transalate(getConfig().getString("Message.Command-Wrong")));
             }
+        } else {
+            sender.sendMessage(color.transalate(getConfig().getString("Message.No-Permissions")));
+        }
+    }
+
+    private void reloadConfiguration(CommandSender sender) {
+        reloadConfig();
+        sender.sendMessage(color.transalate(getConfig().getString("Message.Reload-Successful")));
+    }
+
+    @Override
+    public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
+        if (cmd.getName().equalsIgnoreCase("authmepe") && args.length == 1) {
+            ArrayList<String> command = new ArrayList<>();
+            command.add("reload");
+            return command;
         }
         return null;
     }

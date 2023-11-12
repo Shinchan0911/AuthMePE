@@ -10,8 +10,7 @@
 Setting:
   Prefix: '&r[&bAuthMePE&r]'
   Delay-Open-Menu: 1 #thời gian delay mở Menu-AuthMe-Geyser
-  Menu-AuthMe-Geyser: true #bật menu register và login
-  Skip-AuthMe-Geyser: false #bật tính năng skip register và login cho pe (nhớ tắt Menu-AuthMe-Geyser đi)
+  Menu-AuthMe-Geyser: true #bật menu register và login, tắt đi tức là bật skip login
   Password-Login-Geyser: 'AuthMePE' #password mà plugin sẽ dùng để tạo cho các player pe khi bật Skip-AuthMe-Geyser
 #cấu hình menu
 Menu:
@@ -27,11 +26,10 @@ Menu:
   Input-Login-Placeholder: 'Nhập mật khẩu'
 #tùy chỉnh các message, placeholder: {prefix}
 Message:
-  Wrong-Password: '{prefix} &cSai Mật Khẩu' #kick player nếu mật khẩu sai
-  Not-Enough: '{prefix} &cBạn Chưa Điền Đầy Đủ Thông Tin' #kick player nếu không đầy đủ thông tin
-  Not-Same: '{prefix} &c2Mật Khẩu Không Giống Nhau' #kick player nếu 2 mật khẩu không giống nhau
+  Wrong-Password: '&cSai Mật Khẩu' #thông báo player nếu mật khẩu sai
+  Not-Enough: '&cBạn Chưa Điền Đầy Đủ Thông Tin' #thông báo player nếu không đầy đủ thông tin
+  Not-Same: '&c2Mật Khẩu Không Giống Nhau' #thông bao player nếu 2 mật khẩu không giống nhau
   Reload-Successful: '{prefix} &aReload Config Thành Công' #reload config thành công
-  Not-Toggle: '{prefix} &cBạn Chưa Chấp Nhận Tạo Tài Khoản' #chưa bật xác nhận tạo acc
   No-Permissions: '{prefix} &cBạn Không Có Quyền Thực Hiện Lệnh Này' #thông báo không có quyền
   Command-Wrong: '{prefix} &a/authmepe reload |&e Reload Config Plugin' #lệnh không hợp lệ
   Auto-Login: '{prefix} &aTài Khoản Của Bạn Đã Được Đăng Nhập Tự Động'
