@@ -23,7 +23,7 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aAuthor:&e ShinTHL09");
         logMessage("&aPlugin:&e Has Enable");
         logMessage("&aName:&e " + this.getName());
-        logMessage("&aVersion:&e " + this.getPluginMeta().getVersion());
+        logMessage("&aVersion:&e 1.1.1");
         logMessage("&e---------------------");
     }
 
@@ -33,7 +33,7 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aAuthor:&e ShinTHL09");
         logMessage("&aPlugin:&e Has Disable");
         logMessage("&aName:&e " + this.getName());
-        logMessage("&aVersion:&e " + this.getPluginMeta().getVersion());
+        logMessage("&aVersion:&e 1.1.1");
         logMessage("&e---------------------");
     }
 
