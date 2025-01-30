@@ -20,6 +20,7 @@ import org.geysermc.floodgate.api.player.FloodgatePlayer;
 public class PlayerJoin implements Listener {
     private final Plugin plugin = AuthMePE.getPlugin(AuthMePE.class);
     AuthMeApi authme = AuthMeApi.getInstance();
+    FloodgateApi floodgate = FloodgateApi.getInstance();
 
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
@@ -29,8 +30,8 @@ public class PlayerJoin implements Listener {
         }, plugin.getConfig().getLong("Setting.Delay-Open-Menu") * 10L);
     }
     private void handlePlayerJoin(Player player) {
-        if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
-            if (AuthMeApi.getInstance().isRegistered(player.getName())) {
+        if (floodgate.isFloodgatePlayer(player.getUniqueId())) {
+            if (authme.isRegistered(player.getName())) {
                 handleRegisteredPlayer(player);
             } else {
                 handleUnregisteredPlayer(player);
@@ -39,10 +40,10 @@ public class PlayerJoin implements Listener {
     }
 
     private void handleRegisteredPlayer(Player player) {
-        if (!AuthMeApi.getInstance().isAuthenticated(player)) {
+        if (!authme.isAuthenticated(player)) {
             if (!plugin.getConfig().getBoolean("Setting.Menu-AuthMe-Geyser")) {
                 player.sendMessage(color.transalate(plugin.getConfig().getString("Message.Auto-Login")));
-                AuthMeApi.getInstance().forceLogin(player);
+                authme.forceLogin(player);
             } else {
                 sendLoginMenu(player, null);
             }
@@ -51,7 +52,7 @@ public class PlayerJoin implements Listener {
 
     private void handleUnregisteredPlayer(Player player) {
         if (!plugin.getConfig().getBoolean("Setting.Menu-AuthMe-Geyser")) {
-            AuthMeApi.getInstance().forceRegister(player, plugin.getConfig().getString("Setting.Password-Login-Geyser"), true);
+            authme.forceRegister(player, plugin.getConfig().getString("Setting.Password-Login-Geyser"), true);
             player.sendMessage(color.transalate(plugin.getConfig().getString("Message.Auto-Register")));
         } else {
             sendRegisterMenu(player, null);
@@ -59,7 +60,7 @@ public class PlayerJoin implements Listener {
     }
 
     private void sendLoginMenu(Player player, String label) {
-        FloodgatePlayer floodPlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
+        FloodgatePlayer floodPlayer = floodgate.getPlayer(player.getUniqueId());
         CustomForm.Builder formBuilder = createFormBuilder("Menu.Title-Login", "Menu.Title-Login-Password", "Menu.Input-Login-Placeholder");
         formBuilder.responseHandler((form, responseData) -> handleLoginFormResponse(player, form.parseResponse(responseData)));
         addLabelToForm(formBuilder, label);
@@ -73,15 +74,15 @@ public class PlayerJoin implements Listener {
         }
 
         String password = loginForm.getInput(0);
-        if (AuthMeApi.getInstance().checkPassword(player.getName(), password)) {
-            AuthMeApi.getInstance().forceLogin(player);
+        if (authme.checkPassword(player.getName(), password)) {
+            authme.forceLogin(player);
         } else {
             sendLoginMenu(player, plugin.getConfig().getString("Message.Wrong-Password"));
         }
     }
 
     private void sendRegisterMenu(Player player, String label) {
-        FloodgatePlayer floodPlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
+        FloodgatePlayer floodPlayer = floodgate.getPlayer(player.getUniqueId());
         CustomForm.Builder formBuilder = createFormBuilder("Menu.Title-Register", "Menu.Title-Register-Password", "Menu.Input-Register-Placeholder");
         formBuilder.input(
                 color.transalate(plugin.getConfig().getString("Menu.Title-Register-RePassword")),
@@ -101,7 +102,7 @@ public class PlayerJoin implements Listener {
         String password = registerForm.getInput(0);
         String rePassword = registerForm.getInput(1);
         if (rePassword.equals(password)) {
-            AuthMeApi.getInstance().forceRegister(player, password, true);
+            authme.forceRegister(player, password, true);
         } else {
             sendRegisterMenu(player, plugin.getConfig().getString("Message.Not-Same"));
         }
