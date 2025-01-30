@@ -1,5 +1,7 @@
 package me.shinthl09.event;
 
+import org.bukkit.Bukkit;
+import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import me.shinthl09.AuthMePE;
 import me.shinthl09.color.color;
@@ -8,7 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.geysermc.cumulus.CustomForm;
 import org.geysermc.cumulus.response.CustomFormResponse;
 import org.geysermc.floodgate.api.FloodgateApi;
@@ -16,16 +19,15 @@ import org.geysermc.floodgate.api.player.FloodgatePlayer;
 
 public class PlayerJoin implements Listener {
     private final Plugin plugin = AuthMePE.getPlugin(AuthMePE.class);
+    AuthMeApi authme = AuthMeApi.getInstance();
 
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
-        new BukkitRunnable() {
-            public void run() {
-                handlePlayerJoin(event.getPlayer());
-            }
-        }.runTaskLater(plugin, plugin.getConfig().getLong("Setting.Delay-Open-Menu") * 10L);
+        Player player = event.getPlayer();
+        Bukkit.getRegionScheduler().runDelayed(plugin, player.getLocation(), (task) -> {
+            handlePlayerJoin(player);
+        }, plugin.getConfig().getLong("Setting.Delay-Open-Menu") * 10L);
     }
-
     private void handlePlayerJoin(Player player) {
         if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
             if (AuthMeApi.getInstance().isRegistered(player.getName())) {

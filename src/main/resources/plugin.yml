@@ -4,6 +4,7 @@ main: me.shinthl09.AuthMePE
 api-version: 1.13
 depend: [ floodgate , AuthMe]
 author: ShinTHL09
+folia-supported: true
 commands:
   authmepe:
     usage: /<command>
