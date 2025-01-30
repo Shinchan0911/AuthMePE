@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthMePE extends JavaPlugin {
-    GlobalRegionScheduler global = Bukkit.getGlobalRegionScheduler();
     
     @Override
     public void onEnable() {
@@ -25,7 +24,8 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aAuthor:&e ShinTHL09");
         logMessage("&aPlugin:&e Has Enable");
         logMessage("&aName:&e " + this.getName());
-        logMessage("&aVersion:&e 1.1.1");
+        logMessage("&aVersion:&e 1.1.2");
+        logMessage("&aAdd support folia by Tuanvo0022");
         logMessage("&e---------------------");
     }
 
@@ -35,9 +35,10 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aAuthor:&e ShinTHL09");
         logMessage("&aPlugin:&e Has Disable");
         logMessage("&aName:&e " + this.getName());
-        logMessage("&aVersion:&e 1.1.1");
+        logMessage("&aVersion:&e 1.1.2");
+        logMessage("&aAdd support folia by Tuanvo0022");        
         logMessage("&e---------------------");
-        global.cancelTasks(this);
+        Bukkit.getGlobalRegionScheduler().cancelTasks(this);
     }
 
     private void logMessage(String message) {
