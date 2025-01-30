@@ -1,2 +1,2 @@
-# AuthMePE
-AuthMe Addon
+# AuthMePE Folia
+AuthMePE support folia
