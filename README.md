@@ -1,2 +1,0 @@
-# AuthMePE
-AuthMe Addon
