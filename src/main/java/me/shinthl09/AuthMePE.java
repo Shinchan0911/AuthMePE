@@ -1,5 +1,6 @@
 package me.shinthl09;
 
+import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -13,7 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthMePE extends JavaPlugin {
-
+    GlobalRegionScheduler global = Bukkit.getGlobalRegionScheduler();
+    
     @Override
     public void onEnable() {
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
@@ -35,6 +37,7 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aName:&e " + this.getName());
         logMessage("&aVersion:&e 1.1.1");
         logMessage("&e---------------------");
+        global.cancelTasks(this);
     }
 
     private void logMessage(String message) {
