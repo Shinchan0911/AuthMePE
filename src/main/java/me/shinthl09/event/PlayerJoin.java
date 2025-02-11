@@ -1,7 +1,6 @@
 package me.shinthl09.event;
 
 import org.bukkit.Bukkit;
-import io.papermc.paper.threadedregions.scheduler.RegionScheduler;
 import fr.xephi.authme.api.v3.AuthMeApi;
 import me.shinthl09.AuthMePE;
 import me.shinthl09.color.color;
@@ -25,7 +24,7 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        Bukkit.getRegionScheduler().runDelayed(plugin, player.getLocation(), (task) -> {
+        Bukkit.getGlobalRegionScheduler().runDelayed(plugin, (task) -> {
             handlePlayerJoin(player);
         }, plugin.getConfig().getLong("Setting.Delay-Open-Menu") * 10L);
     }
