@@ -76,7 +76,7 @@ public class PlayerJoin implements Listener {
         if (authme.checkPassword(player.getName(), password)) {
             authme.forceLogin(player);
         } else {
-            if (plugin.getConfig().getBoolean("Wrong-Kick")) {
+            if (plugin.getConfig().getBoolean("Setting.Wrong-Kick")) {
                 player.kickPlayer(plugin.getConfig().getString(color.transalate("Message.Wrong-Password")));
             } else {
                 sendLoginMenu(player, plugin.getConfig().getString(color.transalate("Message.Wrong-Password")));
