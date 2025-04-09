@@ -1,6 +1,7 @@
 package me.shinthl09;
 
-import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import com.github.Anon8281.universalScheduler.UniversalScheduler;
+import com.github.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,9 +16,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthMePE extends JavaPlugin {
+    private static TaskScheduler scheduler;
     
     @Override
     public void onEnable() {
+        scheduler = UniversalScheduler.getScheduler(this);
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
@@ -40,9 +43,13 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aVersion:&e 1.1.2");
         logMessage("&aAdd support folia by Tuanvo0022");        
         logMessage("&e---------------------");
-        Bukkit.getGlobalRegionScheduler().cancelTasks(this);
+        getScheduler().cancelTasks(this);
     }
-
+    
+    public static TaskScheduler getScheduler() {
+        return scheduler;
+    }
+    
     private void logMessage(String message) {
         Bukkit.getConsoleSender().sendMessage(color.transalate(message));
     }
