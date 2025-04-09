@@ -29,7 +29,7 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aAuthor:&e ShinTHL09");
         logMessage("&aPlugin:&e Has Enable");
         logMessage("&aName:&e " + this.getName());
-        logMessage("&aVersion:&e 1.1.2");
+        logMessage("&aVersion:&e 1.1.3");
         logMessage("&aAdd support folia by Tuanvo0022");
         logMessage("&e---------------------");
     }
@@ -40,7 +40,7 @@ public class AuthMePE extends JavaPlugin {
         logMessage("&aAuthor:&e ShinTHL09");
         logMessage("&aPlugin:&e Has Disable");
         logMessage("&aName:&e " + this.getName());
-        logMessage("&aVersion:&e 1.1.2");
+        logMessage("&aVersion:&e 1.1.3");
         logMessage("&aAdd support folia by Tuanvo0022");        
         logMessage("&e---------------------");
         getScheduler().cancelTasks(this);
