@@ -68,7 +68,7 @@ public class PlayerJoin implements Listener {
 
     private void handleLoginFormResponse(Player player, CustomFormResponse loginForm) {
         if (!loginForm.isCorrect()) {
-            sendLoginMenu(player, plugin.getConfig().getString("Message.Not-Enough"));
+            sendLoginMenu(player, color.transalate(plugin.getConfig().getString("Message.Not-Enough")));
             return;
         }
 
@@ -76,7 +76,11 @@ public class PlayerJoin implements Listener {
         if (authme.checkPassword(player.getName(), password)) {
             authme.forceLogin(player);
         } else {
-            sendLoginMenu(player, plugin.getConfig().getString("Message.Wrong-Password"));
+            if (plugin.getConfig().getBoolean("Wrong-Kick")) {
+                player.kickPlayer(plugin.getConfig().getString(color.transalate("Message.Wrong-Password")));
+            } else {
+                sendLoginMenu(player, plugin.getConfig().getString(color.transalate("Message.Wrong-Password")));
+            }
         }
     }
 
@@ -94,7 +98,7 @@ public class PlayerJoin implements Listener {
 
     private void handleRegisterFormResponse(Player player, CustomFormResponse registerForm) {
         if (!registerForm.isCorrect()) {
-            sendRegisterMenu(player, plugin.getConfig().getString("Message.Not-Enough"));
+            sendRegisterMenu(player, color.transalate(plugin.getConfig().getString("Message.Not-Enough")));
             return;
         }
 
@@ -103,7 +107,7 @@ public class PlayerJoin implements Listener {
         if (rePassword.equals(password)) {
             authme.forceRegister(player, password, true);
         } else {
-            sendRegisterMenu(player, plugin.getConfig().getString("Message.Not-Same"));
+            sendRegisterMenu(player, color.transalate(plugin.getConfig().getString("Message.Not-Same")));
         }
     }
 

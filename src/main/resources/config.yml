@@ -12,6 +12,7 @@ Setting:
   Delay-Open-Menu: 1 #thời gian delay mở Menu-AuthMe-Geyser
   Menu-AuthMe-Geyser: true #bật menu register và login, tắt đi tức là bật skip login
   Password-Login-Geyser: 'AuthMePE' #password mà plugin sẽ dùng để tạo cho các player pe khi bật Skip-AuthMe-Geyser
+  Wrong-Kick: false #kick player khi đăng nhập sai mật khẩu
 #cấu hình menu
 Menu:
   #tùy chỉnh menu đăng ký
