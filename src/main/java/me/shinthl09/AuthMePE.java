@@ -1,6 +1,7 @@
 package me.shinthl09;
 
 import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -20,6 +21,7 @@ public class AuthMePE extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerJoin(), this);
         getConfig().options().copyDefaults(true);
         saveDefaultConfig();
+        new Metrics(this, 25417);
         logMessage("&e---------------------");
         logMessage("&aAuthor:&e ShinTHL09");
         logMessage("&aPlugin:&e Has Enable");
