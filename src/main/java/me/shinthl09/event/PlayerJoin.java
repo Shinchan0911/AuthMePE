@@ -24,7 +24,7 @@ public class PlayerJoin implements Listener {
     @EventHandler
     public void onPlayerJoin(final PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        Bukkit.getGlobalRegionScheduler().runDelayed(plugin, (task) -> {
+        AuthMePE.getScheduler().runTaskLaterAsynchronously(plugin, () -> {
             handlePlayerJoin(player);
         }, plugin.getConfig().getLong("Setting.Delay-Open-Menu") * 10L);
     }
